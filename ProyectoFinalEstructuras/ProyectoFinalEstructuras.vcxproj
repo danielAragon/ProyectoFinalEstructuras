@@ -75,7 +75,6 @@
     <ClInclude Include="Controlador.h" />
     <ClInclude Include="Cosas.h" />
     <ClInclude Include="Creeps.h" />
-    <ClInclude Include="Equipos.h" />
     <ClInclude Include="Estructuras.h" />
     <ClInclude Include="Tienda.h" />
     <ClInclude Include="Heroes.h" />

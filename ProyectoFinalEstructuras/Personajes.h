@@ -4,7 +4,8 @@
 class Personaje :public Cosa
 {
 public:
-	Player team;
+	Tipo tipo;
+	Team team;
 	int expGiveAway;
 	int delta;
 	int ataque;
@@ -17,11 +18,12 @@ public:
 
 	bool canMove;
 	bool alive;
-	Personaje(int _x, int _y, int _vida, int _ataque, int _defensa, Player _team)
-		:team(_team),Cosa(_x, _y), vida(_vida), ataque(_ataque), defensa(_defensa) {
+	Personaje(Tipo _tipo,int _x, int _y, int _vida, int _ataque, int _defensa, Team _team)
+		:tipo(_tipo),Cosa(_x, _y), vida(_vida), ataque(_ataque), defensa(_defensa), team(_team) {
 		vida_actual = vida;
 		canMove = true;
 	}
+
 	virtual void set(int _x,int _y) {
 		obj_x=_x;
 		obj_y=_y;
@@ -42,25 +44,21 @@ public:
 		}
 	}
 
-	virtual void ataqueBase(bool colision, Personaje*enemigo) {
+	virtual void ataqueBase(Personaje*enemigo) {
 		obj_x = enemigo->x;
 		obj_y = enemigo->y;
-		if (colision == true) {
-			if (enemigo->vida_actual - ataque <= 0)
-				enemigo->vida_actual = 0;
-			else
+		if (enemigo->vida_actual - ataque <= 0)
+			enemigo->vida_actual = 0;
+		else
 			enemigo->vida_actual -= ataque;
-			canMove = false;
-		}
 	}
 	
 	virtual void dibujar(Graphics^g, Bitmap^img,Color c)
 	{
 		int vida_actualPrint = vida_actual * (width-1) / vida;
-		dibujarBase(g,img);		
+		dibujarBase(g,img);
 		g->DrawRectangle(gcnew Pen(Color::White), x, y - 6, width, 6);
-		g->FillRectangle(gcnew SolidBrush(c), x+1, y - 5, vida_actualPrint, 5);
-	
+		g->FillRectangle(gcnew SolidBrush(c), x+1, y - 5, vida_actualPrint, 5);	
 	}
 	~Personaje() {}
 };

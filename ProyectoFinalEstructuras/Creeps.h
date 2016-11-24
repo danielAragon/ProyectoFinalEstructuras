@@ -5,43 +5,36 @@
 class Creep:public Personaje
 {
 public:
-	int base_x;
-	int base_y;
-	Creep( int _x, int _y, int _vida, int _ataque, int _defensa,Player _team,Estructura* _obj) :
-		Personaje(_x, _y, _vida, _ataque, _defensa,_team){
+
+	Creep(Tipo _tipo, int _x, int _y, int _vida, int _ataque, int _defensa,Team _team) :
+		Personaje(_tipo,_x, _y, _vida, _ataque, _defensa,_team){
 		width = 32; height = 32;
 		delta = 5;
 		canMove = true;
-		base_x = _obj->x;
-		base_y = _obj->y;
+		set(_team == Radiant ? 950 : 50, 324);
 	}
+	~Creep() {}
+
 	virtual void dibujarBase(Graphics^g, Bitmap^img)override {
 		Rectangle Origen = Rectangle(0,0, 32, 32);
 		Rectangle Destino = Rectangle(x, y, width, height);
 		g->DrawImage(img, Destino, Origen, GraphicsUnit::Pixel);
 	}
-	~Creep(){}
-	virtual void ataqueBase(bool colision, Personaje*enemigo) override{
+	virtual void ataqueBase(Personaje*enemigo) override{
 		if (enemigo->vida_actual>0)
 		{
 			obj_x = enemigo->x;
 			obj_y = enemigo->y;
-			if (colision == true) {
-				if (enemigo->vida_actual - ataque <= 0)
-					enemigo->vida_actual = 0;
-				else
-					enemigo->vida_actual -= ataque;
-				canMove = false;
-			}
+			if (enemigo->vida_actual - ataque <= 0)
+				enemigo->vida_actual = 0;
+			else
+				enemigo->vida_actual -= ataque;
 		}
 		else
 		{
 			canMove = true;
-			obj_x = base_x;
-			obj_y = base_y;
+			set(team == Radiant ? 950 : 50, 324);
 		}
-
-
 	}
 
 

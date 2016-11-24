@@ -330,7 +330,6 @@ namespace ProyectoFinalEstructuras {
 	}
 	private: System::Void MyForm_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 		bool player;
-		TypeMove mov;	
 		if (e->KeyData == Keys::D1) {
 			juego->seleccion = Radiant;
 			juego->mouse_x = juego->PJ1->x;

@@ -6,9 +6,8 @@
 using namespace std;
 using namespace System;
 using namespace System::Drawing;
-enum Building {Ancient,Tower};
-enum TypeMove {Estatico, Derecha, Izquierda, Arriba, Abajo };
-enum Player {Radiant, Dire };
+enum Tipo {Ancient,Tower,R_Creep,D_Creep,R_Player,D_Player};
+enum Team {Radiant, Dire };
 class Cosa
 {
 public:

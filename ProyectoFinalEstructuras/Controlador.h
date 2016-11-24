@@ -10,27 +10,17 @@ class Controlador
 public:
 	Heroe* PJ1;
 	Heroe* PJ2;
-
-	Player seleccion;
-
+	Estructura* R_Ancestro;
+	Estructura* D_Ancestro;
+	Team seleccion;
 	Cosa* map;
 	Cosa*barraLateral;
 	int mouse_x;
 	int mouse_y;
-
 	int spwnR_x;
 	int spwnR_y;
 	int spwnD_x;
 	int spwnD_y;
-	
-	Estructura* r_Ancient;
-	Estructura* d_Ancient;
-
-	Estructura* r_Torre;
-	Estructura* d_Torre;
-
-	vector<Creep*> r_Creeps;
-	vector<Creep*> d_Creeps;
 
 	vector<Personaje*> recRadiant;
 	vector<Personaje*> recDire;
@@ -41,28 +31,24 @@ public:
 		spwnD_x = 870;
 		spwnD_y = 300;
 
-		PJ1 = new Heroe(spwnR_x, spwnR_y, 1000, 1, 20, 2, 25,Radiant);		
-		PJ2 = new Heroe(spwnD_x, spwnD_y,1000, 1, 20, 3, 5,Dire);
+		PJ1 = new Heroe(R_Player,spwnR_x, spwnR_y, 1000, 1, 20, 2, 25,Radiant);		
+		PJ2 = new Heroe(D_Player,spwnD_x, spwnD_y,1000, 1, 20, 3, 5,Dire);
 
-		r_Ancient = new Estructura(10, 180, 5000, 200,100, Radiant, Ancient);
-		d_Ancient = new Estructura(920, 180, 5000, 200,100, Dire, Ancient);
+		R_Ancestro = new Estructura(Ancient, 10, 180, 5000, 200, 100, Radiant);
+		D_Ancestro = new Estructura(Ancient, 920, 180, 5000, 200, 100, Dire);
 
-		r_Torre = new Estructura(285, 180, 5000, 200,100,Radiant,Tower);
-		d_Torre = new Estructura(725, 180, 5000, 200,100,Dire,Tower);
+		recRadiant.push_back(PJ1);
+		recRadiant.push_back(R_Ancestro);
+		recRadiant.push_back(new Estructura(Tower,285, 180, 5000, 200, 100, Radiant));
+
+		recDire.push_back(PJ2);
+		recDire.push_back(D_Ancestro);
+		recDire.push_back(new Estructura(Tower,725, 180, 5000, 200, 100, Dire));
 
 		map = new Cosa(0, 0, 1040, 656);
 		barraLateral = new Cosa(1040, 0, 240, 656);
 
 		srand(time(0));
-
-		recRadiant.push_back(PJ1);
-		recRadiant.push_back(r_Ancient);
-		recRadiant.push_back(r_Torre);
-		recDire.push_back(PJ2);
-		recDire.push_back(d_Ancient);
-		recDire.push_back(d_Torre);
-
-
 	}
 	~Controlador(){}
 
@@ -70,74 +56,126 @@ public:
 	void dibujarJuego(long n,Graphics^g, Bitmap^mapa,Bitmap^luffy,Bitmap^sanji,Bitmap^wall,Bitmap^r_creep, Bitmap^d_creep,Bitmap^torre){
 		map->dibujarBase(g, mapa);
 		barraLateral->dibujarBase(g, wall);
-		colisionador();
+
+		colisionador(g);
 		moverTodo();
-		PJ1->dibujarInfo(g, luffy,Player::Radiant,barraLateral,Color::Salmon);
-		PJ2->dibujarInfo(g, sanji, Player::Dire, barraLateral, Color::BlueViolet);
 
-		r_Torre->dibujar(g, torre, Color::Gold);
-		d_Torre->dibujar(g, torre, Color::Gold);
-		r_Ancient->dibujar(g, torre, Color::Gold);
-		d_Ancient->dibujar(g, torre, Color::Gold);
+		PJ1->dibujarInfo(g, luffy,Team::Radiant,barraLateral,Color::Salmon);
+		PJ2->dibujarInfo(g, sanji, Team::Dire, barraLateral, Color::BlueViolet);
 
-		if (n == 1000) {	
-			r_Creeps.push_back(new Creep(230 + rand() % 50, 250 + rand() % 50, 100, 4, 0, Radiant, d_Ancient));
-			recRadiant.push_back(r_Creeps.back());
-			r_Creeps.push_back(new Creep(185 + rand() % 50, 300 + rand() % 50, 100, 4, 0, Radiant, d_Ancient));
-			recRadiant.push_back(r_Creeps.back());
-			r_Creeps.push_back(new Creep(230 + rand() % 50, 340 + rand() % 50, 100, 4, 0, Radiant, d_Ancient));
-			recRadiant.push_back(r_Creeps.back());
-
-			d_Creeps.push_back(new Creep(780 + rand() % 50, 250 + rand() % 50, 100, 4, 0, Dire, r_Ancient));
-			recDire.push_back(d_Creeps.back());
-			d_Creeps.push_back(new Creep(825 + rand() % 50, 300 + rand() % 50, 100, 4, 0, Dire, r_Ancient));
-			recDire.push_back(d_Creeps.back());
-			d_Creeps.push_back(new Creep(780 + rand() % 50, 340 + rand() % 50, 100, 4, 0, Dire, r_Ancient));
-			recDire.push_back(d_Creeps.back());
+		for each(Personaje* p in recRadiant)
+		{	
+			switch (p->tipo)
+			{
+			case Ancient:case Tower:
+				p->dibujar(g, torre, Color::Gold);
+				break;
+			case R_Creep:
+				p->dibujar(g, r_creep, Color::Lime);
+				break;		
+			case R_Player:
+				p->dibujar(g, luffy, Color::Salmon);
+				break;		
+			default:
+				break;
+			}
 		}
-		for each (Creep* i in r_Creeps) {
-			i->dibujar(g, r_creep, Color::Lime);
+		for each (Personaje* p in recDire)
+		{
+			switch (p->tipo)
+			{
+			case Ancient:case Tower:
+				p->dibujar(g, torre, Color::Gold);
+				break;		
+			case D_Creep:
+				p->dibujar(g, d_creep, Color::Lime);
+				break;		
+			case D_Player:
+				p->dibujar(g, sanji, Color::BlueViolet);
+				break;
+			default:
+				break;
+			}
 		}
-		for each (Creep* i in d_Creeps) {
-			i->dibujar(g, d_creep, Color::Lime);
+		if (n == 1000) {			
+			for (int i = 0; i < 3; i++)
+			{
+				recRadiant.push_back(new Creep(R_Creep,230 + rand() % 100, 250 + rand() % 100, 400, 15, 7, Radiant));
+				recDire.push_back(new Creep(D_Creep,780 + rand() %100, 340 + rand() % 100, 400, 15, 7, Dire));
+			}
 		}
 	}
+
+	vector<Personaje*>::iterator Eliminar(vector<Personaje*> &vec) {
+		for (vector<Personaje*>::iterator it = vec.begin(); it != vec.end(); ++it) {
+			if ((*it)->vida_actual == 0)
+				return it;
+		}
+		return vec.end();
+	}
+
 	void moverTodo() {
 		switch (seleccion)
 		{
-		case Player::Radiant:
+		case Team::Radiant:
 			PJ1->set(mouse_x,mouse_y);
 			break;
-		case Player::Dire:	
+		case Team::Dire:	
 			PJ2->set(mouse_x,mouse_y);
 			break;		
 		}
-		for each (Creep* i in r_Creeps) {
-			i->set(d_Ancient->x, d_Ancient->y+98);
+		for each(Personaje* p in recRadiant) {
+			if (p->tipo == R_Creep)
+			p->set(p->obj_x, p->obj_y);
 		}
-		for each (Creep* i in d_Creeps) {
-			i->set(r_Ancient->x, r_Ancient->y+98);
+		for each(Personaje* p in recDire) {
+			if (p->tipo == D_Creep)
+			p->set(p->obj_x, p->obj_y);
 		}
 	}
-	void colisionador() {
-		
-		Rectangle R_M = Rectangle(mouse_x - 16, mouse_y - 16, 1, 1);
-		
-		for each(Personaje* R in recRadiant) {
-			Rectangle A = Rectangle(R->x - 16, R->y - 16, R->width, R->height);
-			for each(Personaje* D in recDire) {
-				Rectangle B = Rectangle(D->x - 16, D->y - 16, D->width, D->height);
-				
-				R->ataqueBase(A.IntersectsWith(B),D);
-				D->ataqueBase(B.IntersectsWith(A),R);
 
-				if (!R_M.IntersectsWith(Rectangle(PJ1->x,PJ1->y,PJ1->width,PJ1->height)))
-					PJ1->canMove = true;
-				if (!R_M.IntersectsWith(Rectangle(PJ2->x, PJ2->y, PJ2->width, PJ2->height)))
-					PJ2->canMove = true;
-				
+	void colisionador(Graphics^g) {
+
+		Rectangle M = Rectangle(mouse_x - 16, mouse_y - 16, 1, 1);
+		g->DrawRectangle(gcnew Pen(Color::White, 1), M);
+
+		for each(Personaje* R in recRadiant) {
+			Rectangle A = Rectangle(R->x, R->y , R->width, R->height);
+			g->DrawRectangle(gcnew Pen(Color::White,1),A);
+			for each(Personaje* D in recDire) {
+				Rectangle B = Rectangle(D->x , D->y , D->width, D->height);
+				g->DrawRectangle(gcnew Pen(Color::White, 1), B);
+				if (A.IntersectsWith(B)&&B.IntersectsWith(A)) {
+					if (R->tipo == R_Creep) {
+						R->canMove = false;
+						R->obj_x = D->x;
+						R->obj_y = D->y + D->height/2;
+					}
+					if (D->tipo == D_Creep) {
+						D->canMove = false;
+						D->obj_x = R->x;
+						D->obj_y = R->y + R->height / 2;
+					}
+					R->ataqueBase(D);
+					D->ataqueBase(R);
+				}
+				else
+				{
+					if (R->tipo == R_Creep) {
+						R->canMove = true;
+					}
+					if (D->tipo == D_Creep) {
+						D->canMove = true;
+					}
+				}				
 			}
 		}
+		vector<Personaje*>::iterator R = Eliminar(recRadiant);
+		if (R != recRadiant.end() && (*R)->vida_actual == 0)
+			recRadiant.erase(R);
+		vector<Personaje*>::iterator D = Eliminar(recDire);
+		if (D != recDire.end() && (*D)->vida_actual == 0)
+			recDire.erase(D);
 	}
 };
 #endif // !__CONTROLADOR_H__

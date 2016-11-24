@@ -33,9 +33,6 @@
     <ClInclude Include="Cosas.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Equipos.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="Habilidades.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>

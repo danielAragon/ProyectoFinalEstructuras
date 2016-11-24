@@ -16,8 +16,8 @@ public:
 	int agilidad;
 	int fuerza;
 
-	Heroe(int _x, int _y, int _vida,int _ataque, int _defensa, int _fuerza,int _agilidad,Player _team ) :
-		Personaje(_x, _y, _vida,_ataque,_defensa,_team), fuerza(_fuerza),agilidad(_agilidad)
+	Heroe(Tipo _tipo,int _x, int _y, int _vida,int _ataque, int _defensa, int _fuerza,int _agilidad,Team _team ) :
+		Personaje(_tipo,_x, _y, _vida,_ataque,_defensa,_team), fuerza(_fuerza),agilidad(_agilidad)
 	{
 		width = 48;
 		height = 48;
@@ -38,9 +38,9 @@ public:
 		Rectangle Destino = Rectangle(x, y, width, height);
 		g->DrawImage(img, Destino, Origen, GraphicsUnit::Pixel);
 	}
-	void dibujarInfo(Graphics^g,Bitmap^img,Player seleccion,Cosa*area,Color c){
+	void dibujarInfo(Graphics^g,Bitmap^img,Team seleccion,Cosa*area,Color c){
 		int fixed_x = area->x + 15;
-		int fixed_y = Player::Radiant == seleccion ? area->y + 15 : area->y + (area->height) / 2 + 15;
+		int fixed_y = Team::Radiant == seleccion ? area->y + 15 : area->y + (area->height) / 2 + 15;
 		Font^font = gcnew Font("Arial", 8);
 		Pen^pen = gcnew Pen(Color::White);
 
@@ -69,7 +69,7 @@ public:
 		g->DrawString("AGI:   " + agilidad.ToString(), font, Brushes::White, fixed_x + 111, fixed_y+48);//agilidad
 		g->DrawString("LVL:   " + nivel.ToString(), font, Brushes::White, fixed_x + 111, fixed_y+64);//nivel
 
-		dibujar(g, img, c);
+	//	dibujar(g, img, c);
 	}
 
 };
