@@ -71,7 +71,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Consumibles.h" />
     <ClInclude Include="Controlador.h" />
     <ClInclude Include="Cosas.h" />
     <ClInclude Include="Creeps.h" />

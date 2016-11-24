@@ -25,15 +25,13 @@ public:
 		{
 			obj_x = enemigo->x;
 			obj_y = enemigo->y;
-			if (enemigo->vida_actual - ataque <= 0)
+			if (enemigo->vida_actual - ataque <= 0){
+				canMove = true;
+				set(team == Radiant ? 950 : 50, 324);
 				enemigo->vida_actual = 0;
+			}
 			else
 				enemigo->vida_actual -= ataque;
-		}
-		else
-		{
-			canMove = true;
-			set(team == Radiant ? 950 : 50, 324);
 		}
 	}
 

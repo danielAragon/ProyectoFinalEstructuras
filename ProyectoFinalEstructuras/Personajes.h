@@ -6,6 +6,7 @@ class Personaje :public Cosa
 public:
 	Tipo tipo;
 	Team team;
+
 	int expGiveAway;
 	int delta;
 	int ataque;
@@ -17,7 +18,6 @@ public:
 	int obj_y;
 
 	bool canMove;
-	bool alive;
 	Personaje(Tipo _tipo,int _x, int _y, int _vida, int _ataque, int _defensa, Team _team)
 		:tipo(_tipo),Cosa(_x, _y), vida(_vida), ataque(_ataque), defensa(_defensa), team(_team) {
 		vida_actual = vida;

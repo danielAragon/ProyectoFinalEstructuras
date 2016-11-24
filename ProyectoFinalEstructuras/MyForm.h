@@ -321,9 +321,8 @@ namespace ProyectoFinalEstructuras {
 		BufferedGraphics^buffer = bc->Allocate(g, this->ClientRectangle);
 		buffer->Graphics->Clear(Color::Black);	
 
-		n+= 100;
-		juego->dibujarJuego(n,buffer->Graphics, mapa, luffy,sanji,wall,batman,hitler,torre);
-		if (n == 10000)n = 0;
+		juego->n++;
+		juego->dibujarJuego(buffer->Graphics, mapa, luffy,sanji,wall,batman,hitler,torre);
 		buffer->Render(g);
 
 		delete buffer; delete bc; delete g;
@@ -345,8 +344,10 @@ namespace ProyectoFinalEstructuras {
 		this->Text = e->Location.ToString()+ClientSize;
 	}
 	private: System::Void MyForm_MouseDown(System::Object^  sender, System::Windows::Forms::MouseEventArgs^  e) {
-		juego->mouse_x = e->X-24;
-		juego->mouse_y = e->Y-24;
+		if (e->X < 1039) {
+			juego->mouse_x = e->X - 24;
+			juego->mouse_y = e->Y - 24;
+		}
 	}
 
 

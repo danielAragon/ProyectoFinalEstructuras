@@ -8,13 +8,18 @@
 class Controlador 
 {
 public:
+	long n;
+	int creepsSpawntime;
+	Team seleccion;
+
 	Heroe* PJ1;
 	Heroe* PJ2;
 	Estructura* R_Ancestro;
 	Estructura* D_Ancestro;
-	Team seleccion;
+
 	Cosa* map;
 	Cosa*barraLateral;
+
 	int mouse_x;
 	int mouse_y;
 	int spwnR_x;
@@ -26,6 +31,8 @@ public:
 	vector<Personaje*> recDire;
 
 	Controlador(){
+		n = 99;
+		creepsSpawntime=200;
 		spwnR_x = 140;
 		spwnR_y = 300;
 		spwnD_x = 870;
@@ -50,10 +57,10 @@ public:
 
 		srand(time(0));
 	}
-	~Controlador(){}
-
+	///---
 	void comenzar(){}
-	void dibujarJuego(long n,Graphics^g, Bitmap^mapa,Bitmap^luffy,Bitmap^sanji,Bitmap^wall,Bitmap^r_creep, Bitmap^d_creep,Bitmap^torre){
+	///---
+	void dibujarJuego(Graphics^g, Bitmap^mapa,Bitmap^luffy,Bitmap^sanji,Bitmap^wall,Bitmap^r_creep, Bitmap^d_creep,Bitmap^torre){
 		map->dibujarBase(g, mapa);
 		barraLateral->dibujarBase(g, wall);
 
@@ -97,15 +104,16 @@ public:
 				break;
 			}
 		}
-		if (n == 1000) {			
+		if (n == creepsSpawntime) {			
 			for (int i = 0; i < 3; i++)
 			{
 				recRadiant.push_back(new Creep(R_Creep,230 + rand() % 100, 250 + rand() % 100, 400, 15, 7, Radiant));
 				recDire.push_back(new Creep(D_Creep,780 + rand() %100, 340 + rand() % 100, 400, 15, 7, Dire));
 			}
+			creepsSpawntime+=200;
 		}
 	}
-
+	///---
 	vector<Personaje*>::iterator Eliminar(vector<Personaje*> &vec) {
 		for (vector<Personaje*>::iterator it = vec.begin(); it != vec.end(); ++it) {
 			if ((*it)->vida_actual == 0)
@@ -113,7 +121,7 @@ public:
 		}
 		return vec.end();
 	}
-
+	///---
 	void moverTodo() {
 		switch (seleccion)
 		{
@@ -133,7 +141,7 @@ public:
 			p->set(p->obj_x, p->obj_y);
 		}
 	}
-
+	///---
 	void colisionador(Graphics^g) {
 
 		Rectangle M = Rectangle(mouse_x - 16, mouse_y - 16, 1, 1);
@@ -171,11 +179,21 @@ public:
 			}
 		}
 		vector<Personaje*>::iterator R = Eliminar(recRadiant);
-		if (R != recRadiant.end() && (*R)->vida_actual == 0)
+
+		if (R != recRadiant.end() && (*R)->vida_actual == 0) {
+			if ((*R)->tipo == R_Player)
+			{
+				Heroe* aux = new Heroe(R_Player, spwnR_x, spwnR_y, 1000, 1, 20, 2, 25, Radiant);
+				recRadiant.push_back(aux);
+				PJ1 = aux;
+			}
 			recRadiant.erase(R);
+		
+		}
 		vector<Personaje*>::iterator D = Eliminar(recDire);
-		if (D != recDire.end() && (*D)->vida_actual == 0)
+		if (D != recDire.end() && (*D)->vida_actual == 0) {
 			recDire.erase(D);
+		}
 	}
 };
 #endif // !__CONTROLADOR_H__

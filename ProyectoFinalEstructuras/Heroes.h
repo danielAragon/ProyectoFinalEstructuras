@@ -7,12 +7,14 @@ class Heroe :public Personaje
 public:
 	int exp_actual;
 	int exp_ToLVLUp;
+	int exp_giveaway;
 	int nivel;
 
 	int mana;
 	int mana_actual;
 
 	int oro;
+	int oro_giveaway;
 	int agilidad;
 	int fuerza;
 
@@ -21,15 +23,22 @@ public:
 	{
 		width = 48;
 		height = 48;
-		oro = 900;
-		vida_actual = vida;
-		ataque += fuerza * 2;
-
 		exp_actual = 0;
 		nivel = 0;
-		exp_ToLVLUp=400;
+		exp_ToLVLUp = 400+50*nivel;
+
+		oro = 900;
+		oro_giveaway = 200 + 10 * nivel;
+
+		vida_actual = vida;
+		ataque += fuerza * 1.2;
+
+	
+
+
 		mana = 900;
 		mana_actual = mana;
+
 		delta = agilidad;
 	}
 	~Heroe(){}
